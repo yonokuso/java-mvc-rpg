@@ -2,6 +2,8 @@ package rpg.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.io.File;
@@ -19,7 +21,9 @@ import rpg.model.Monster;
 import rpg.model.Skill;
 
 public class BattleView extends JPanel {
-    private static final int MONSTER_IMAGE_SIZE = 150;
+    private static final int MONSTER_PANEL_WIDTH = 190;
+    private static final int MONSTER_PANEL_HEIGHT = 260;
+    private static final int MONSTER_IMAGE_SIZE = 130;
     private static final String IMAGE_DIRECTORY = "assets/images/";
     private static final String[] IMAGE_EXTENSIONS = {".gif", ".png", ".jpg", ".jpeg"};
 
@@ -35,26 +39,38 @@ public class BattleView extends JPanel {
     public BattleView() {
         setLayout(new BorderLayout(8, 8));
         logArea.setEditable(false);
-        logScrollPane.setPreferredSize(new Dimension(260, 0));
+        logArea.setLineWrap(true);
+        logArea.setWrapStyleWord(true);
 
-        JPanel statusPanel = new JPanel(new GridLayout(1, 2, 8, 8));
-        statusPanel.add(playerStatus);
-        statusPanel.add(enemyStatus);
+        JPanel playerPanel = createMonsterPanel(playerStatus, playerImage);
+        JPanel enemyPanel = createMonsterPanel(enemyStatus, enemyImage);
 
-        JPanel imagePanel = new JPanel(new GridLayout(1, 2, 24, 8));
-        imagePanel.setBorder(BorderFactory.createEmptyBorder(12, 24, 12, 24));
-        configureImageLabel(playerImage);
-        configureImageLabel(enemyImage);
-        imagePanel.add(playerImage);
-        imagePanel.add(enemyImage);
+        JPanel battlePanel = new JPanel(new GridBagLayout());
+        battlePanel.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridy = 0;
+        constraints.fill = GridBagConstraints.BOTH;
+
+        constraints.gridx = 0;
+        constraints.weightx = 0.2;
+        battlePanel.add(playerPanel, constraints);
+
+        constraints.gridx = 1;
+        constraints.weightx = 0.6;
+        constraints.insets.set(0, 12, 0, 12);
+        battlePanel.add(logScrollPane, constraints);
+
+        constraints.gridx = 2;
+        constraints.weightx = 0.2;
+        constraints.insets.set(0, 0, 0, 0);
+        battlePanel.add(enemyPanel, constraints);
 
         JPanel bottomPanel = new JPanel(new BorderLayout(8, 8));
         bottomPanel.add(skillPanel, BorderLayout.CENTER);
         bottomPanel.add(menuButton, BorderLayout.EAST);
 
-        add(statusPanel, BorderLayout.NORTH);
-        add(imagePanel, BorderLayout.CENTER);
-        add(logScrollPane, BorderLayout.EAST);
+        add(battlePanel, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
@@ -87,6 +103,7 @@ public class BattleView extends JPanel {
 
     public void appendLog(String message) {
         logArea.append(message + System.lineSeparator());
+        logArea.setCaretPosition(logArea.getDocument().getLength());
     }
 
     public void clearLog() {
@@ -95,6 +112,17 @@ public class BattleView extends JPanel {
 
     public JButton getMenuButton() {
         return menuButton;
+    }
+
+    private JPanel createMonsterPanel(JLabel statusLabel, JLabel imageLabel) {
+        configureImageLabel(imageLabel);
+
+        JPanel panel = new JPanel(new BorderLayout(8, 8));
+        panel.setPreferredSize(new Dimension(MONSTER_PANEL_WIDTH, MONSTER_PANEL_HEIGHT));
+        panel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+        panel.add(statusLabel, BorderLayout.NORTH);
+        panel.add(imageLabel, BorderLayout.CENTER);
+        return panel;
     }
 
     private String formatMonster(Monster monster) {
@@ -136,7 +164,8 @@ public class BattleView extends JPanel {
     }
 
     private String toImageFileName(Monster monster) {
-        if (monster.getName().equals("칼 든 고블린")) {
+        String name = monster.getName().toLowerCase();
+        if (monster.getName().equals("칼 고블린")) {
             return "spr_sword";
         }
         if (monster.getName().equals("망치 고블린")) {
@@ -145,13 +174,13 @@ public class BattleView extends JPanel {
         if (monster.getName().equals("채찍 고블린")) {
             return "spr_caught";
         }
+        if (monster.getName().equals("도끼 고블린")) {
+            return "spr_axe";
+        }
         if (monster.getName().equals("스켈레톤")) {
             return "skeleton_attack";
         }
-        return monster.getName()
-                .replace("야생의 ", "")
-                .toLowerCase()
-                .replaceAll("[^a-z0-9]+", "");
+        return name.replace("야생의 ", "").replaceAll("[^a-z0-9]+", "");
     }
 
     private File findImageFile(String baseName) {
