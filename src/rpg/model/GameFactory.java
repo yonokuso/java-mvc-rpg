@@ -8,7 +8,7 @@ public final class GameFactory {
 
     public static Player createDefaultPlayer() {
         return new Player("플레이어", List.of(
-                new Monster("칼 든 고블린", ElementType.NORMAL, 110, 15, List.of(
+                new Monster("칼 고블린", ElementType.NORMAL, 110, 15, List.of(
                         new AttackSkill("스워드 슬래시", 17, ElementType.NORMAL),
                         new AttackSkill("찌르기", 11, ElementType.NORMAL))),
                 new Monster("망치 고블린", ElementType.NORMAL, 125, 17, List.of(
@@ -16,8 +16,11 @@ public final class GameFactory {
                         new AttackSkill("몸통박치기", 13, ElementType.NORMAL))),
                 new Monster("채찍 고블린", ElementType.NORMAL, 130, 13, List.of(
                         new AttackSkill("채찍 날리기", 15, ElementType.NORMAL),
-                        new AttackSkill("끌어당기기", 12, ElementType.NORMAL)))
-                
+                        new AttackSkill("끌어당기기", 12, ElementType.NORMAL))),
+                new Monster("도끼 고블린", ElementType.NORMAL, 105, 13, List.of(
+                        new AttackSkill("내려찍기", 17, ElementType.NORMAL),
+                        new AttackSkill("도끼 날리기", 18, ElementType.NORMAL)))
+
                 ));
     }
 
