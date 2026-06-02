@@ -7,21 +7,23 @@ public final class GameFactory {
     }
 
     public static Player createDefaultPlayer() {
-        return new Player("Player", List.of(
-                new Monster("Flameling", ElementType.FIRE, 110, 14, List.of(
-                        new AttackSkill("Spark Claw", 16, ElementType.FIRE),
-                        new AttackSkill("Tackle", 10, ElementType.NORMAL))),
-                new Monster("Aquaffin", ElementType.WATER, 120, 12, List.of(
-                        new AttackSkill("Bubble Shot", 15, ElementType.WATER),
-                        new AttackSkill("Tail Hit", 11, ElementType.NORMAL))),
-                new Monster("Leafairy", ElementType.GRASS, 100, 16, List.of(
-                        new AttackSkill("Vine Lash", 17, ElementType.GRASS),
-                        new AttackSkill("Quick Tap", 9, ElementType.NORMAL)))));
+        return new Player("플레이어", List.of(
+                new Monster("칼 든 고블린", ElementType.NORMAL, 110, 15, List.of(
+                        new AttackSkill("스워드 슬래시", 17, ElementType.NORMAL),
+                        new AttackSkill("찌르기", 11, ElementType.NORMAL))),
+                new Monster("망치 고블린", ElementType.NORMAL, 125, 17, List.of(
+                        new AttackSkill("망치 날리기", 19, ElementType.NORMAL),
+                        new AttackSkill("몸통박치기", 13, ElementType.NORMAL))),
+                new Monster("채찍 고블린", ElementType.NORMAL, 130, 13, List.of(
+                        new AttackSkill("채찍 날리기", 15, ElementType.NORMAL),
+                        new AttackSkill("끌어당기기", 12, ElementType.NORMAL)))
+                
+                ));
     }
 
     public static Monster createDefaultEnemy() {
-        return new Monster("Wild Emberox", ElementType.FIRE, 115, 13, List.of(
-                new AttackSkill("Fire Fang", 15, ElementType.FIRE),
-                new AttackSkill("Body Slam", 10, ElementType.NORMAL)));
+        return new Monster("스켈레톤", ElementType.NORMAL, 120, 14, List.of(
+                new AttackSkill("뼈 던지기", 16, ElementType.NORMAL),
+                new AttackSkill("검은 손톱", 12, ElementType.NORMAL)));
     }
 }

@@ -15,7 +15,7 @@ public class MainMenuView extends JPanel {
 
     public MainMenuView() {
         setLayout(new BorderLayout(16, 16));
-        JLabel title = new JLabel("Turn-Based RPG", SwingConstants.CENTER);
+        JLabel title = new JLabel("고블린 키우기: Text RPG", SwingConstants.CENTER);
         title.setFont(title.getFont().deriveFont(28f));
 
         JPanel buttons = new JPanel(new GridLayout(4, 1, 8, 8));

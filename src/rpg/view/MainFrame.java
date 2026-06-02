@@ -9,7 +9,7 @@ public class MainFrame extends JFrame {
     private final JPanel root = new JPanel(cardLayout);
 
     public MainFrame() {
-        super("Turn-Based RPG");
+        super("고블린 키우기: Text RPG");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(720, 480);
         setLocationRelativeTo(null);

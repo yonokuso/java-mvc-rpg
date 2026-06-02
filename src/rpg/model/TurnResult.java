@@ -16,7 +16,7 @@ public class TurnResult {
     }
 
     public String toMessage() {
-        return attackerName + " used " + skillName + " on " + defenderName + " for " + damage + " damage.";
+        return attackerName + "이(가) " + defenderName + "에게 "  + skillName + "을(를) 사용했다!" + damage + " 데미지.";
     }
 
     public BattleResult getBattleResult() {

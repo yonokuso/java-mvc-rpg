@@ -13,7 +13,7 @@ import rpg.view.MonsterSelectView;
 
 public class GameController {
     private static final String MENU = "menu";
-    private static final String MONSTER_SELECT = "monsterSelect";
+    private static final String MONSTER_SELECT = "고블린 선택";
     private static final String BATTLE = "battle";
 
     private final MainFrame frame = new MainFrame();
@@ -48,7 +48,7 @@ public class GameController {
         monsterSelectView.getBattleButton().addActionListener(event -> {
             int selectedIndex = monsterSelectView.getSelectedMonsterIndex();
             if (selectedIndex < 0) {
-                showMessage("Choose a monster first.");
+                showMessage("고블린을 선택해 주세요.");
                 return;
             }
             player.selectMonster(selectedIndex);
@@ -68,7 +68,7 @@ public class GameController {
     private void saveGame() {
         try {
             saveService.save(player);
-            showMessage("Game saved to player.dat.");
+            showMessage("게임을 저장했습니다. (player.dat)");
         } catch (Exception exception) {
             showMessage("Save failed: " + exception.getMessage());
         }
@@ -77,7 +77,7 @@ public class GameController {
     private void loadGame() {
         try {
             player = saveService.load();
-            showMessage("Game loaded.");
+            showMessage("게임을 불러왔습니다.");
             showMonsterSelect();
         } catch (Exception exception) {
             showMessage("Load failed: " + exception.getMessage());

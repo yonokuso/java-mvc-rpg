@@ -25,7 +25,7 @@ public class BattleController {
         battleView.updateBattle(battle);
         battleView.setSkills(battle.getPlayer().getSelectedMonster().getSkills(), this::handleSkillClick);
         battleView.getMenuButton().addActionListener(event -> frame.showScreen(menuScreenName));
-        battleView.appendLog("A wild " + battle.getEnemy().getName() + " appeared.");
+        battleView.appendLog("앗! 야생의 " + battle.getEnemy().getName() + "이(가) 나타났다! ∑(ﾟДﾟ)w");
     }
 
     private void handleSkillClick(int skillIndex) {
@@ -54,11 +54,11 @@ public class BattleController {
 
     private boolean finishIfBattleEnded(BattleResult result) {
         if (result == BattleResult.PLAYER_WIN) {
-            battleView.appendLog("You won the battle.");
+            battleView.appendLog("전투에서 이겼습니다!");
             return true;
         }
         if (result == BattleResult.ENEMY_WIN) {
-            battleView.appendLog("Your monster fainted.");
+            battleView.appendLog("고블린이 쓰러졌습니다.");
             return true;
         }
         return false;

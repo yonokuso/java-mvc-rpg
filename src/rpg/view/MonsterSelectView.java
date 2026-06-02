@@ -11,8 +11,8 @@ import rpg.model.Player;
 public class MonsterSelectView extends JPanel {
     private final DefaultListModel<Monster> monsterListModel = new DefaultListModel<>();
     private final JList<Monster> monsterList = new JList<>(monsterListModel);
-    private final JButton battleButton = new JButton("Start Battle");
-    private final JButton backButton = new JButton("Back");
+    private final JButton battleButton = new JButton("모험하기");
+    private final JButton backButton = new JButton("돌아가기");
 
     public MonsterSelectView() {
         setLayout(new BorderLayout(8, 8));
