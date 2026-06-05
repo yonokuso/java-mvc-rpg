@@ -17,7 +17,6 @@ public class MainMenuView extends JPanel {
 
     private final JButton newGameButton = new JButton("New Game");
     private final JButton loadButton = new JButton("Load");
-    private final JButton saveButton = new JButton("Save");
     private final JButton exitButton = new JButton("Exit");
 
     public MainMenuView() {
@@ -25,7 +24,7 @@ public class MainMenuView extends JPanel {
 
         JLabel title = new JLabel("고블린 키우기: Text RPG", SwingConstants.CENTER);
         title.setFont(title.getFont().deriveFont(28f));
-        title.setForeground(Color.GREEN);
+        title.setForeground(Color.RED);
 
         JLabel goblinImage = new JLabel("", SwingConstants.CENTER);
         Icon icon = loadTitleGoblinIcon();
@@ -35,17 +34,23 @@ public class MainMenuView extends JPanel {
             goblinImage.setIcon(icon);
         }
 
+        JLabel grass = new JLabel("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", SwingConstants.CENTER);
+        grass.setFont(grass.getFont().deriveFont(20f));
+        grass.setForeground(Color.GREEN);
+
+
         JPanel titlePanel = new JPanel(new BorderLayout(8, 16));
         titlePanel.setOpaque(true);
-        titlePanel.setBackground(Color.YELLOW);
+        titlePanel.setBackground(Color.CYAN);
         titlePanel.setBorder(BorderFactory.createEmptyBorder(56, 0, 44, 0));
         titlePanel.add(title, BorderLayout.NORTH);
         titlePanel.add(goblinImage, BorderLayout.CENTER);
+        titlePanel.add(grass, BorderLayout.SOUTH);
 
-        JPanel buttons = new JPanel(new GridLayout(4, 1, 8, 8));
+
+        JPanel buttons = new JPanel(new GridLayout(3, 1, 8, 8));
         buttons.add(newGameButton);
         buttons.add(loadButton);
-        buttons.add(saveButton);
         buttons.add(exitButton);
 
         add(titlePanel, BorderLayout.CENTER);
@@ -58,10 +63,6 @@ public class MainMenuView extends JPanel {
 
     public JButton getLoadButton() {
         return loadButton;
-    }
-
-    public JButton getSaveButton() {
-        return saveButton;
     }
 
     public JButton getExitButton() {
@@ -86,7 +87,7 @@ public class MainMenuView extends JPanel {
             }
             currentDirectory = currentDirectory.getParentFile();
         }
-        return findInDirectory(new File("C:/Project/java-mvc-rpg/" + IMAGE_DIRECTORY), baseName);
+        return null;
     }
 
     private File findInDirectory(File imageDirectory, String baseName) {

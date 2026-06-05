@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -17,13 +18,18 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import rpg.model.Battle;
+import rpg.model.Adventure;
 import rpg.model.Monster;
+import rpg.model.Player;
 import rpg.model.Skill;
 
 public class BattleView extends JPanel {
     private static final int MONSTER_PANEL_WIDTH = 190;
     private static final int MONSTER_PANEL_HEIGHT = 260;
     private static final int MONSTER_IMAGE_SIZE = 130;
+    private static final int STATUS_LABEL_HEIGHT = 44;
+    private static final int LOG_PANEL_WIDTH = 260;
+    private static final int LOG_PANEL_HEIGHT = 260;
     private static final String IMAGE_DIRECTORY = "assets/images/";
     private static final String[] IMAGE_EXTENSIONS = {".gif", ".png", ".jpg", ".jpeg"};
 
@@ -35,12 +41,15 @@ public class BattleView extends JPanel {
     private final JTextArea logArea = new JTextArea();
     private final JScrollPane logScrollPane = new JScrollPane(logArea);
     private final JButton menuButton = new JButton("메뉴로 돌아가기");
+    private final JButton saveButton = new JButton("저장");
 
     public BattleView() {
         setLayout(new BorderLayout(8, 8));
         logArea.setEditable(false);
         logArea.setLineWrap(true);
         logArea.setWrapStyleWord(true);
+        logScrollPane.setPreferredSize(new Dimension(LOG_PANEL_WIDTH, LOG_PANEL_HEIGHT));
+        logScrollPane.setMinimumSize(new Dimension(LOG_PANEL_WIDTH, LOG_PANEL_HEIGHT));
 
         JPanel playerPanel = createMonsterPanel(playerStatus, playerImage);
         JPanel enemyPanel = createMonsterPanel(enemyStatus, enemyImage);
@@ -54,6 +63,7 @@ public class BattleView extends JPanel {
 
         constraints.gridx = 0;
         constraints.weightx = 0.2;
+        constraints.weighty = 1.0;
         battlePanel.add(playerPanel, constraints);
 
         constraints.gridx = 1;
@@ -67,8 +77,11 @@ public class BattleView extends JPanel {
         battlePanel.add(enemyPanel, constraints);
 
         JPanel bottomPanel = new JPanel(new BorderLayout(8, 8));
+        JPanel actionPanel = new JPanel(new GridLayout(1, 2, 8, 8));
+        actionPanel.add(saveButton);
+        actionPanel.add(menuButton);
         bottomPanel.add(skillPanel, BorderLayout.CENTER);
-        bottomPanel.add(menuButton, BorderLayout.EAST);
+        bottomPanel.add(actionPanel, BorderLayout.EAST);
 
         add(battlePanel, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
@@ -77,10 +90,38 @@ public class BattleView extends JPanel {
     public void updateBattle(Battle battle) {
         Monster playerMonster = battle.getPlayer().getSelectedMonster();
         Monster enemy = battle.getEnemy();
-        playerStatus.setText(formatMonster(playerMonster));
+        playerStatus.setText(formatPlayerMonster(battle));
         enemyStatus.setText(formatMonster(enemy));
         setMonsterImage(playerImage, playerMonster);
         setMonsterImage(enemyImage, enemy);
+    }
+
+    public void showExploration(Player player) {
+        playerStatus.setText(formatPlayerMonster(player));
+        setMonsterImage(playerImage, player.getSelectedMonster());
+        enemyStatus.setText("동굴 탐험 중 - Stage "
+                + player.getStageIndex() + "/" + Adventure.ESCAPE_STAGE_INDEX);
+        enemyImage.setIcon(null);
+        enemyImage.setText("...");
+        clearSkills();
+    }
+
+    public void showAdventureComplete(Player player) {
+        playerStatus.setText(formatPlayerMonster(player));
+        setMonsterImage(playerImage, player.getSelectedMonster());
+        enemyStatus.setText("동굴 탈출 완료 - Stage "
+                + player.getStageIndex() + "/" + Adventure.ESCAPE_STAGE_INDEX);
+        enemyImage.setIcon(null);
+        enemyImage.setText("탈출!");
+        clearSkills();
+    }
+
+    public void showFairySpring(Player player) {
+        playerStatus.setText(formatPlayerMonster(player));
+        setMonsterImage(playerImage, player.getSelectedMonster());
+        enemyStatus.setText("요정의 샘물");
+        setImage(enemyImage, "fairy_pond");
+        clearSkills();
     }
 
     public void setSkills(List<Skill> skills, SkillClickHandler handler) {
@@ -91,6 +132,12 @@ public class BattleView extends JPanel {
             button.addActionListener(event -> handler.onSkillClicked(skillIndex));
             skillPanel.add(button);
         }
+        skillPanel.revalidate();
+        skillPanel.repaint();
+    }
+
+    public void clearSkills() {
+        skillPanel.removeAll();
         skillPanel.revalidate();
         skillPanel.repaint();
     }
@@ -110,15 +157,31 @@ public class BattleView extends JPanel {
         logArea.setText("");
     }
 
-    public JButton getMenuButton() {
-        return menuButton;
+    public void setMenuButtonAction(ActionListener listener) {
+        for (ActionListener actionListener : menuButton.getActionListeners()) {
+            menuButton.removeActionListener(actionListener);
+        }
+        menuButton.addActionListener(listener);
+    }
+
+    public void setSaveButtonAction(ActionListener listener) {
+        for (ActionListener actionListener : saveButton.getActionListeners()) {
+            saveButton.removeActionListener(actionListener);
+        }
+        saveButton.addActionListener(listener);
+    }
+
+    public void setSaveButtonEnabled(boolean enabled) {
+        saveButton.setEnabled(enabled);
     }
 
     private JPanel createMonsterPanel(JLabel statusLabel, JLabel imageLabel) {
+        configureStatusLabel(statusLabel);
         configureImageLabel(imageLabel);
 
         JPanel panel = new JPanel(new BorderLayout(8, 8));
         panel.setPreferredSize(new Dimension(MONSTER_PANEL_WIDTH, MONSTER_PANEL_HEIGHT));
+        panel.setMinimumSize(new Dimension(MONSTER_PANEL_WIDTH, MONSTER_PANEL_HEIGHT));
         panel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
         panel.add(statusLabel, BorderLayout.NORTH);
         panel.add(imageLabel, BorderLayout.CENTER);
@@ -128,6 +191,22 @@ public class BattleView extends JPanel {
     private String formatMonster(Monster monster) {
         return monster.getName() + " [" + monster.getType() + "] HP "
                 + monster.getCurrentHp() + "/" + monster.getMaxHp();
+    }
+
+    private String formatPlayerMonster(Battle battle) {
+        return formatPlayerMonster(battle.getPlayer());
+    }
+
+    private String formatPlayerMonster(Player player) {
+        return player.getName() + " Lv." + player.getLevel()
+                + " - " + formatMonster(player.getSelectedMonster());
+    }
+
+    private void configureStatusLabel(JLabel label) {
+        Dimension size = new Dimension(MONSTER_PANEL_WIDTH, STATUS_LABEL_HEIGHT);
+        label.setPreferredSize(size);
+        label.setMinimumSize(size);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
     private void configureImageLabel(JLabel label) {
@@ -141,6 +220,10 @@ public class BattleView extends JPanel {
 
     private void setMonsterImage(JLabel label, Monster monster) {
         String baseName = toImageFileName(monster);
+        setImage(label, baseName);
+    }
+
+    private void setImage(JLabel label, String baseName) {
         File imageFile = findImageFile(baseName);
         if (imageFile == null) {
             label.setIcon(null);
@@ -179,6 +262,9 @@ public class BattleView extends JPanel {
         }
         if (monster.getName().equals("스켈레톤")) {
             return "skeleton_attack";
+        }
+        if (monster.getName().equals("흑화한 고블린")) {
+            return "spr_death";
         }
         return name.replace("야생의 ", "").replaceAll("[^a-z0-9]+", "");
     }

@@ -132,6 +132,9 @@ public class MonsterSelectView extends JPanel {
         if (name.contains("skeleton") || name.contains("스켈레톤")) {
             return "skeleton_attack";
         }
+        if (name.contains("death") || name.contains("흑화")) {
+            return "spr_death";
+        }
         return name.replace("야생의 ", "").replaceAll("[^a-z0-9]+", "");
     }
 

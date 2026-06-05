@@ -25,8 +25,24 @@ public final class GameFactory {
     }
 
     public static Monster createDefaultEnemy() {
-        return new Monster("스켈레톤", ElementType.NORMAL, 120, 14, List.of(
-                new AttackSkill("뼈 던지기", 16, ElementType.NORMAL),
-                new AttackSkill("검은 손톱", 12, ElementType.NORMAL)));
+        return createSkeletonEnemy();
+    }
+
+    public static List<Monster> createEnemyCandidates() {
+        return List.of(
+                createSkeletonEnemy(),
+                createDarkGoblinEnemy());
+    }
+
+    private static Monster createSkeletonEnemy() {
+        return new Monster("스켈레톤", ElementType.NORMAL, 60, 7, List.of(
+                new AttackSkill("뼈 던지기", 8, ElementType.NORMAL),
+                new AttackSkill("검은 손톱", 6, ElementType.NORMAL)));
+    }
+
+    private static Monster createDarkGoblinEnemy() {
+        return new Monster("흑화한 고블린", ElementType.NORMAL, 75, 8, List.of(
+                new AttackSkill("어둠 베기", 9, ElementType.NORMAL),
+                new AttackSkill("검은 난동", 7, ElementType.NORMAL)));
     }
 }

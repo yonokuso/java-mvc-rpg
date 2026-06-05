@@ -2,7 +2,7 @@ package rpg.controller;
 
 import java.nio.file.Path;
 import javax.swing.JOptionPane;
-import rpg.model.Battle;
+import javax.swing.SwingWorker;
 import rpg.model.GameFactory;
 import rpg.model.Player;
 import rpg.service.SaveService;
@@ -22,6 +22,7 @@ public class GameController {
     private final BattleView battleView = new BattleView();
     private final SaveService saveService = new SaveService(Path.of("player.dat"));
     private Player player = GameFactory.createDefaultPlayer();
+    private boolean gameSaveEnabled;
 
     public void start() {
         frame.addScreen(MENU, menuView);
@@ -29,6 +30,7 @@ public class GameController {
         frame.addScreen(BATTLE, battleView);
         bindMenuActions();
         bindMonsterSelectActions();
+        setGameSaveEnabled(false);
         frame.showScreen(MENU);
         frame.setVisible(true);
     }
@@ -36,10 +38,10 @@ public class GameController {
     private void bindMenuActions() {
         menuView.getNewGameButton().addActionListener(event -> {
             player = GameFactory.createDefaultPlayer();
+            setGameSaveEnabled(false);
             showMonsterSelect();
         });
         menuView.getLoadButton().addActionListener(event -> loadGame());
-        menuView.getSaveButton().addActionListener(event -> saveGame());
         menuView.getExitButton().addActionListener(event -> System.exit(0));
     }
 
@@ -52,10 +54,13 @@ public class GameController {
                 return;
             }
             player.selectMonster(selectedIndex);
-            for (var monster : player.getMonsters()) {
-                monster.healFull();
-            }
-            new BattleController(frame, battleView, new Battle(player, GameFactory.createDefaultEnemy()), MENU).start();
+            new AdventureController(
+                    frame,
+                    battleView,
+                    player,
+                    MENU,
+                    this::saveGame,
+                    this::setGameSaveEnabled).start();
             frame.showScreen(BATTLE);
         });
     }
@@ -66,25 +71,77 @@ public class GameController {
     }
 
     private void saveGame() {
-        try {
-            saveService.save(player);
-            showMessage("게임을 저장했습니다. (player.dat)");
-        } catch (Exception exception) {
-            showMessage("Save failed: " + exception.getMessage());
+        if (!gameSaveEnabled) {
+            showMessage("게임 진행 중에만 저장할 수 있습니다.");
+            return;
         }
+        setMenuButtonsEnabled(false);
+        new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                saveService.save(player);
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    get();
+                    showMessage("게임을 저장했습니다. (player.dat)");
+                } catch (Exception exception) {
+                    showMessage("Save failed: " + getErrorMessage(exception));
+                } finally {
+                    setMenuButtonsEnabled(true);
+                }
+            }
+        }.execute();
     }
 
     private void loadGame() {
-        try {
-            player = saveService.load();
-            showMessage("게임을 불러왔습니다.");
-            showMonsterSelect();
-        } catch (Exception exception) {
-            showMessage("Load failed: " + exception.getMessage());
-        }
+        setMenuButtonsEnabled(false);
+        new SwingWorker<Player, Void>() {
+            @Override
+            protected Player doInBackground() throws Exception {
+                return saveService.load();
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    player = get();
+                    setGameSaveEnabled(false);
+                    showMessage("게임을 불러왔습니다.");
+                    showMonsterSelect();
+                } catch (Exception exception) {
+                    showMessage("Load failed: " + getErrorMessage(exception));
+                } finally {
+                    setMenuButtonsEnabled(true);
+                }
+            }
+        }.execute();
     }
 
     private void showMessage(String message) {
         JOptionPane.showMessageDialog(frame, message);
+    }
+
+    private void setMenuButtonsEnabled(boolean enabled) {
+        menuView.getNewGameButton().setEnabled(enabled);
+        menuView.getLoadButton().setEnabled(enabled);
+        menuView.getExitButton().setEnabled(enabled);
+        battleView.setSaveButtonEnabled(enabled && gameSaveEnabled);
+    }
+
+    private void setGameSaveEnabled(boolean enabled) {
+        gameSaveEnabled = enabled;
+        battleView.setSaveButtonEnabled(enabled);
+    }
+
+    private String getErrorMessage(Exception exception) {
+        Throwable cause = exception.getCause();
+        if (cause != null && cause.getMessage() != null) {
+            return cause.getMessage();
+        }
+        return exception.getMessage();
     }
 }

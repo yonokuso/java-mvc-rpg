@@ -10,20 +10,25 @@ import rpg.model.Player;
 
 public class SaveService {
     private final Path savePath;
+    private final Object fileLock = new Object();
 
     public SaveService(Path savePath) {
         this.savePath = savePath;
     }
 
     public void save(Player player) throws IOException {
-        try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(savePath.toFile()))) {
-            output.writeObject(player);
+        synchronized (fileLock) {
+            try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(savePath.toFile()))) {
+                output.writeObject(player);
+            }
         }
     }
 
     public Player load() throws IOException, ClassNotFoundException {
-        try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(savePath.toFile()))) {
-            return (Player) input.readObject();
+        synchronized (fileLock) {
+            try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(savePath.toFile()))) {
+                return (Player) input.readObject();
+            }
         }
     }
 }
