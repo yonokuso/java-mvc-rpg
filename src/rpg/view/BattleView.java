@@ -124,11 +124,15 @@ public class BattleView extends JPanel {
         clearSkills();
     }
 
-    public void setSkills(List<Skill> skills, SkillClickHandler handler) {
+    public void setSkills(Player player, SkillClickHandler handler) {
         skillPanel.removeAll();
+        Monster attacker = player.getSelectedMonster();
+        List<Skill> skills = attacker.getSkills();
         for (int i = 0; i < skills.size(); i++) {
             int skillIndex = i;
-            JButton button = new JButton(skills.get(i).toString());
+            Skill skill = skills.get(i);
+            JButton button = new JButton(formatSkillButton(skill, player.getLevel()));
+            button.setEnabled(skill.canUse(attacker));
             button.addActionListener(event -> handler.onSkillClicked(skillIndex));
             skillPanel.add(button);
         }
@@ -189,8 +193,8 @@ public class BattleView extends JPanel {
     }
 
     private String formatMonster(Monster monster) {
-        return monster.getName() + " [" + monster.getType() + "] HP "
-                + monster.getCurrentHp() + "/" + monster.getMaxHp();
+        return monster.getName() + " HP " + monster.getCurrentHp() + "/" + monster.getMaxHp()
+                + " SP " + monster.getCurrentSp() + "/" + monster.getMaxSp();
     }
 
     private String formatPlayerMonster(Battle battle) {
@@ -200,6 +204,11 @@ public class BattleView extends JPanel {
     private String formatPlayerMonster(Player player) {
         return player.getName() + " Lv." + player.getLevel()
                 + " - " + formatMonster(player.getSelectedMonster());
+    }
+
+    private String formatSkillButton(Skill skill, int attackerLevel) {
+        return skill.getName() + " (" + skill.calculateDamage(attackerLevel)
+                + " 데미지 / SP " + skill.getSpCost() + ")";
     }
 
     private void configureStatusLabel(JLabel label) {

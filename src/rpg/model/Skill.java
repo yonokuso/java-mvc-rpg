@@ -5,19 +5,23 @@ import java.io.Serializable;
 public abstract class Skill implements Serializable {
     private final String name;
     private final int power;
-    private final ElementType type;
+    private final int spCost;
+    private int powerBonus;
 
-    protected Skill(String name, int power, ElementType type) {
+    protected Skill(String name, int power, int spCost) {
+        if (spCost < 0) {
+            throw new IllegalArgumentException("SP cost cannot be negative.");
+        }
         this.name = name;
         this.power = power;
-        this.type = type;
+        this.spCost = spCost;
+        this.powerBonus = 0;
     }
 
-    public abstract int use(Monster attacker, Monster defender);
+    public abstract int use(Monster attacker, Monster defender, int attackerLevel);
 
-    protected int calculateBaseDamage(Monster attacker, Monster defender) {
-        double typeBonus = type.multiplierAgainst(defender.getType());
-        return Math.max(1, (int) Math.round((power + attacker.getAttack()) * typeBonus));
+    public int calculateDamage(int attackerLevel) {
+        return Math.max(1, (int) Math.round(getPower() * (1 + 0.1 * attackerLevel)));
     }
 
     public String getName() {
@@ -25,15 +29,23 @@ public abstract class Skill implements Serializable {
     }
 
     public int getPower() {
-        return power;
+        return power + powerBonus;
     }
 
-    public ElementType getType() {
-        return type;
+    public int getSpCost() {
+        return spCost;
+    }
+
+    public boolean canUse(Monster attacker) {
+        return attacker.getCurrentSp() >= spCost;
+    }
+
+    public void increasePower(int amount) {
+        powerBonus += Math.max(0, amount);
     }
 
     @Override
     public String toString() {
-        return name + " (" + type + ", " + power + ")";
+        return name + " (" + getPower() + ")";
     }
 }

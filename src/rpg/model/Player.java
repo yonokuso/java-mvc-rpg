@@ -11,7 +11,6 @@ public class Player implements Serializable {
     private final String name;
     private final List<Monster> monsters;
     private int selectedMonsterIndex;
-    private int gold;
     private int level;
     private int stageIndex;
 
@@ -19,7 +18,6 @@ public class Player implements Serializable {
         this.name = name;
         this.monsters = new ArrayList<>(monsters);
         this.selectedMonsterIndex = 0;
-        this.gold = 0;
         this.level = 1;
         this.stageIndex = 0;
     }
