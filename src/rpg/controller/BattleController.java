@@ -37,7 +37,7 @@ public class BattleController {
     public void start() {
         battleFinished = false;
         battleView.updateBattle(battle);
-        battleView.setSkills(battle.getPlayer().getSelectedMonster().getSkills(), this::handleSkillClick);
+        battleView.setSkills(battle.getPlayer(), this::handleSkillClick);
         battleView.setMenuButtonAction(event -> frame.showScreen(menuScreenName));
         battleView.setSaveButtonAction(event -> saveAction.run());
         battleView.appendLog("앗! 야생의 " + battle.getEnemy().getName() + "이(가) 나타났다! ∑(ﾟДﾟ)w");
@@ -66,7 +66,7 @@ public class BattleController {
         battleView.appendLog(enemyTurn.toMessage());
         battleView.updateBattle(battle);
         if (!finishIfBattleEnded(enemyTurn.getBattleResult())) {
-            battleView.setSkillButtonsEnabled(true);
+            battleView.setSkills(battle.getPlayer(), this::handleSkillClick);
         }
     }
 

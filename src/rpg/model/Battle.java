@@ -1,6 +1,7 @@
 package rpg.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -17,15 +18,15 @@ public class Battle implements Serializable {
     public TurnResult playerUsesSkill(int skillIndex) {
         Monster playerMonster = player.getSelectedMonster();
         Skill skill = playerMonster.getSkills().get(skillIndex);
-        int damage = skill.use(playerMonster, enemy);
+        int damage = skill.use(playerMonster, enemy, player.getLevel());
         return new TurnResult(playerMonster.getName(), skill.getName(), enemy.getName(), damage, getResult());
     }
 
     public TurnResult enemyUsesRandomSkill() {
-        List<Skill> skills = enemy.getSkills();
+        List<Skill> skills = getUsableSkills(enemy);
         Skill skill = skills.get(random.nextInt(skills.size()));
         Monster playerMonster = player.getSelectedMonster();
-        int damage = skill.use(enemy, playerMonster);
+        int damage = skill.use(enemy, playerMonster, enemy.getLevel());
         return new TurnResult(enemy.getName(), skill.getName(), playerMonster.getName(), damage, getResult());
     }
 
@@ -45,5 +46,15 @@ public class Battle implements Serializable {
 
     public Monster getEnemy() {
         return enemy;
+    }
+
+    private List<Skill> getUsableSkills(Monster monster) {
+        List<Skill> usableSkills = new ArrayList<>();
+        for (Skill skill : monster.getSkills()) {
+            if (skill.canUse(monster)) {
+                usableSkills.add(skill);
+            }
+        }
+        return usableSkills;
     }
 }
