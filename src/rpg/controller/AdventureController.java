@@ -5,6 +5,7 @@ import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import rpg.model.Adventure;
 import rpg.model.Battle;
+import rpg.model.FairySpringBlessing;
 import rpg.model.Player;
 import rpg.view.BattleView;
 import rpg.view.MainFrame;
@@ -83,25 +84,24 @@ public class AdventureController {
     private void showFairySpring() {
         battleView.showFairySpring(player);
         battleView.appendLog("앗, 요정의 샘물을 발견했다!");
-        String[] options = {"마신다", "안 마신다"};
+        FairySpringBlessing[] blessings = FairySpringBlessing.values();
+        String[] options = new String[blessings.length];
+        for (int i = 0; i < blessings.length; i++) {
+            options[i] = blessings[i].getLabel();
+        }
         int choice = JOptionPane.showOptionDialog(
                 frame,
-                "요정의 샘물을 마시겠습니까?",
+                "어떤 축복을 받겠습니까?",
                 "요정의 샘물",
-                JOptionPane.YES_NO_OPTION,
+                JOptionPane.DEFAULT_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 options,
                 options[0]);
-        if (choice == JOptionPane.YES_OPTION) {
-            int recoveredHp = player.getSelectedMonster().drinkFairySpring(player.getLevel());
+        if (choice >= 0) {
+            String resultMessage = adventure.applyFairySpringBlessing(player, blessings[choice]);
             battleView.showFairySpring(player);
-            if (recoveredHp > 0) {
-                battleView.appendLog("요정의 샘물을 마셨다. 체력이 "
-                        + recoveredHp + " 회복되었다.");
-            } else {
-                battleView.appendLog("체력이 이미 가득 차 있다.");
-            }
+            battleView.appendLog(resultMessage);
         } else {
             battleView.appendLog("요정의 샘물을 지나쳤다.");
         }
@@ -125,7 +125,6 @@ public class AdventureController {
         battleView.updateBattle(currentBattle);
         battleView.appendLog(player.getName() + "의 레벨이 "
                 + player.getLevel() + "이 되었습니다.");
-        battleView.appendLog("StageIndex가 " + player.getStageIndex() + "이 되었습니다.");
         battleView.setSkillButtonsEnabled(false);
 
         Timer timer = new Timer(NEXT_ADVENTURE_DELAY_MILLIS, event -> startExploration());
@@ -142,7 +141,6 @@ public class AdventureController {
     private void finishAdventure() {
         saveEnabledHandler.accept(false);
         battleView.showAdventureComplete(player);
-        battleView.appendLog("StageIndex가 " + player.getStageIndex() + "이 되었습니다.");
         battleView.appendLog("동굴을 탈출했습니다. 게임이 종료되었습니다.");
         battleView.setSkillButtonsEnabled(false);
     }
