@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Random;
 
 public class Battle implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private static final int ENEMY_LEVEL = 1;
+
     private final Player player;
     private final Monster enemy;
     private final Random random = new Random();
@@ -26,7 +29,7 @@ public class Battle implements Serializable {
         List<Skill> skills = getUsableSkills(enemy);
         Skill skill = skills.get(random.nextInt(skills.size()));
         Monster playerMonster = player.getSelectedMonster();
-        int damage = skill.use(enemy, playerMonster, enemy.getLevel());
+        int damage = skill.use(enemy, playerMonster, ENEMY_LEVEL);
         return new TurnResult(enemy.getName(), skill.getName(), playerMonster.getName(), damage, getResult());
     }
 

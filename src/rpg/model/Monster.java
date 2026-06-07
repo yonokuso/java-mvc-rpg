@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class Monster implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final String name;
     private final int maxHp;
     private final int maxSp;
@@ -16,7 +18,6 @@ public class Monster implements Serializable {
     private int maxHpBonus;
     private int maxSpBonus;
     private final List<Skill> skills;
-    private int level;
 
     public Monster(String name, int maxHp, int maxSp, List<Skill> skills) {
         this.name = name;
@@ -27,15 +28,10 @@ public class Monster implements Serializable {
         this.maxHpBonus = 0;
         this.maxSpBonus = 0;
         this.skills = new ArrayList<>(skills);
-        this.level = 1;
     }
 
     public void takeDamage(int damage) {
         currentHp = Math.max(0, currentHp - damage);
-    }
-
-    public void healFull() {
-        currentHp = getMaxHp();
     }
 
     public boolean isDefeated() {
@@ -47,15 +43,11 @@ public class Monster implements Serializable {
     }
 
     public int getMaxHp() {
-        return (maxHp + maxHpBonus) * level;
+        return maxHp + maxHpBonus;
     }
 
     public int getCurrentHp() {
         return currentHp;
-    }
-
-    public int getLevel() {
-        return level;
     }
 
     public int getMaxSp() {
@@ -102,9 +94,6 @@ public class Monster implements Serializable {
 
     private void readObject(ObjectInputStream input) throws IOException, ClassNotFoundException {
         input.defaultReadObject();
-        if (level <= 0) {
-            level = 1;
-        }
         if (maxHpBonus < 0) {
             maxHpBonus = 0;
         }

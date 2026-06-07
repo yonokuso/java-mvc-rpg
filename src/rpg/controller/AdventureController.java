@@ -1,7 +1,6 @@
 package rpg.controller;
 
 import java.util.function.Consumer;
-import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import rpg.model.Adventure;
 import rpg.model.Battle;
@@ -84,22 +83,9 @@ public class AdventureController {
     private void showFairySpring() {
         battleView.showFairySpring(player);
         battleView.appendLog("앗, 요정의 샘물을 발견했다!");
-        FairySpringBlessing[] blessings = FairySpringBlessing.values();
-        String[] options = new String[blessings.length];
-        for (int i = 0; i < blessings.length; i++) {
-            options[i] = blessings[i].getLabel();
-        }
-        int choice = JOptionPane.showOptionDialog(
-                frame,
-                "어떤 축복을 받겠습니까?",
-                "요정의 샘물",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[0]);
-        if (choice >= 0) {
-            String resultMessage = adventure.applyFairySpringBlessing(player, blessings[choice]);
+        FairySpringBlessing blessing = battleView.chooseFairySpringBlessing();
+        if (blessing != null) {
+            String resultMessage = adventure.applyFairySpringBlessing(player, blessing);
             battleView.showFairySpring(player);
             battleView.appendLog(resultMessage);
         } else {

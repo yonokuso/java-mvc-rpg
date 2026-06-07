@@ -3,6 +3,8 @@ package rpg.model;
 import java.io.Serializable;
 
 public abstract class Skill implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final String name;
     private final int power;
     private final int spCost;

@@ -2,6 +2,7 @@ package rpg.view;
 
 import java.awt.CardLayout;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class MainFrame extends JFrame {
@@ -22,5 +23,9 @@ public class MainFrame extends JFrame {
 
     public void showScreen(String name) {
         cardLayout.show(root, name);
+    }
+
+    public void showMessage(String message) {
+        JOptionPane.showMessageDialog(this, message);
     }
 }

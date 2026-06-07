@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class Player implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final String name;
     private final List<Monster> monsters;
     private int selectedMonsterIndex;

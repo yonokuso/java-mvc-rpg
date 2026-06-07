@@ -1,6 +1,8 @@
 package rpg.model;
 
 public class AttackSkill extends Skill {
+    private static final long serialVersionUID = 1L;
+
     public AttackSkill(String name, int power, int spCost) {
         super(name, power, spCost);
     }

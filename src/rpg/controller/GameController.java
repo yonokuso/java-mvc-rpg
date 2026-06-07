@@ -1,7 +1,6 @@
 package rpg.controller;
 
 import java.nio.file.Path;
-import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import rpg.model.GameFactory;
 import rpg.model.Player;
@@ -122,7 +121,7 @@ public class GameController {
     }
 
     private void showMessage(String message) {
-        JOptionPane.showMessageDialog(frame, message);
+        frame.showMessage(message);
     }
 
     private void setMenuButtonsEnabled(boolean enabled) {

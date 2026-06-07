@@ -5,20 +5,20 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import rpg.model.Battle;
 import rpg.model.Adventure;
+import rpg.model.FairySpringBlessing;
 import rpg.model.Monster;
 import rpg.model.Player;
 import rpg.model.Skill;
@@ -30,8 +30,6 @@ public class BattleView extends JPanel {
     private static final int STATUS_LABEL_HEIGHT = 44;
     private static final int LOG_PANEL_WIDTH = 260;
     private static final int LOG_PANEL_HEIGHT = 260;
-    private static final String IMAGE_DIRECTORY = "assets/images/";
-    private static final String[] IMAGE_EXTENSIONS = {".gif", ".png", ".jpg", ".jpeg"};
 
     private final JLabel playerStatus = new JLabel("", SwingConstants.CENTER);
     private final JLabel enemyStatus = new JLabel("", SwingConstants.CENTER);
@@ -179,6 +177,28 @@ public class BattleView extends JPanel {
         saveButton.setEnabled(enabled);
     }
 
+    public FairySpringBlessing chooseFairySpringBlessing() {
+        FairySpringBlessing[] blessings = FairySpringBlessing.values();
+        String[] options = new String[blessings.length];
+        for (int i = 0; i < blessings.length; i++) {
+            options[i] = blessings[i].getLabel();
+        }
+
+        int choice = JOptionPane.showOptionDialog(
+                this,
+                "어떤 축복을 받겠습니까?",
+                "요정의 샘물",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]);
+        if (choice < 0) {
+            return null;
+        }
+        return blessings[choice];
+    }
+
     private JPanel createMonsterPanel(JLabel statusLabel, JLabel imageLabel) {
         configureStatusLabel(statusLabel);
         configureImageLabel(imageLabel);
@@ -228,64 +248,20 @@ public class BattleView extends JPanel {
     }
 
     private void setMonsterImage(JLabel label, Monster monster) {
-        String baseName = toImageFileName(monster);
+        String baseName = ImageAssetLoader.getMonsterImageBaseName(monster);
         setImage(label, baseName);
     }
 
     private void setImage(JLabel label, String baseName) {
-        File imageFile = findImageFile(baseName);
-        if (imageFile == null) {
+        ImageIcon icon = ImageAssetLoader.loadIcon(baseName, MONSTER_IMAGE_SIZE);
+        if (icon == null) {
             label.setIcon(null);
             label.setText(baseName + ".gif / .png");
             return;
         }
 
-        ImageIcon original = new ImageIcon(imageFile.getPath());
-        if (imageFile.getName().toLowerCase().endsWith(".gif")) {
-            label.setText("");
-            label.setIcon(original);
-            return;
-        }
-
-        Image scaled = original.getImage().getScaledInstance(
-                MONSTER_IMAGE_SIZE,
-                MONSTER_IMAGE_SIZE,
-                Image.SCALE_SMOOTH);
         label.setText("");
-        label.setIcon(new ImageIcon(scaled));
-    }
-
-    private String toImageFileName(Monster monster) {
-        String name = monster.getName().toLowerCase();
-        if (monster.getName().equals("칼 고블린")) {
-            return "spr_sword";
-        }
-        if (monster.getName().equals("망치 고블린")) {
-            return "spr_hammering";
-        }
-        if (monster.getName().equals("채찍 고블린")) {
-            return "spr_caught";
-        }
-        if (monster.getName().equals("도끼 고블린")) {
-            return "spr_axe";
-        }
-        if (monster.getName().equals("스켈레톤")) {
-            return "skeleton_attack";
-        }
-        if (monster.getName().equals("흑화한 고블린")) {
-            return "spr_death";
-        }
-        return name.replace("야생의 ", "").replaceAll("[^a-z0-9]+", "");
-    }
-
-    private File findImageFile(String baseName) {
-        for (String extension : IMAGE_EXTENSIONS) {
-            File imageFile = new File(IMAGE_DIRECTORY + baseName + extension);
-            if (imageFile.exists()) {
-                return imageFile;
-            }
-        }
-        return null;
+        label.setIcon(icon);
     }
 
     public interface SkillClickHandler {
