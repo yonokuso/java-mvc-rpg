@@ -25,3 +25,17 @@ java -cp out rpg.Main
 - 간단한 적 AI 턴
 - 승패 판정
 - 파일 저장 및 불러오기
+- 전투 화면 몬스터 이미지 표시
+- GIF 몬스터 이미지 표시
+
+## 몬스터 이미지 추가
+
+이미지는 `assets/images` 폴더에 넣습니다. GIF와 PNG를 모두 지원합니다.
+
+- `assets/images/spr_sword.gif` 또는 `assets/images/spr_sword.png`
+- `assets/images/spr_axe.gif` 또는 `assets/images/spr_axe.png`
+- `assets/images/skeleton_attack.gif` 또는 `assets/images/skeleton_attack.png`
+
+GIF는 애니메이션을 유지하기 위해 원본 크기로 표시합니다. PNG, JPG, JPEG는 전투 화면에서 `150x150` 크기로 조정됩니다.
+
+이미지가 없으면 전투 화면에는 필요한 파일명이 대신 표시됩니다.
