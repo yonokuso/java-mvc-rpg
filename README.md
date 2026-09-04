@@ -2,14 +2,13 @@
 
 Java Swing과 MVC 패턴을 활용한 턴제 RPG 게임 프로젝트입니다.
 
-
-<img width="882" height="590" alt="Snipaste_2026-06-07_22-09-57" src="https://github.com/user-attachments/assets/194de1c4-b075-40ce-9ed2-a979bd82adba" />
-<img width="882" height="590" alt="Snipaste_2026-06-07_22-06-08" src="https://github.com/user-attachments/assets/eb30e956-06d8-4031-8302-d61a145fbec0" />
-
-<img width="882" height="590" alt="Snipaste_2026-06-07_21-39-53" src="https://github.com/user-attachments/assets/881a7ebd-09ae-4e9b-b9ea-2e88075c302f" />
-
-<img width="877" height="588" alt="Snipaste_2026-06-07_21-40-43" src="https://github.com/user-attachments/assets/4b3bd44b-2f62-4255-b446-7e337e484da8" />
-<img width="877" height="582" alt="Snipaste_2026-06-07_21-40-10" src="https://github.com/user-attachments/assets/629f8e98-7c78-4154-893e-f980b6685bd6" />
+<img width="1920" height="1080" alt="32" src="https://github.com/user-attachments/assets/20805f8b-413d-4f8e-afbd-c1e9cbfb0705" />
+<img width="1920" height="1080" alt="31" src="https://github.com/user-attachments/assets/237c7ff5-57d3-462f-9ea5-9b04e9b0ddb3" />
+<img width="1920" height="1080" alt="30" src="https://github.com/user-attachments/assets/a07be7a3-0b6d-40dc-9a94-9949dd812ae1" />
+<img width="1920" height="1080" alt="29" src="https://github.com/user-attachments/assets/5797348c-9475-48f1-9dd3-cddaa47e6487" />
+<img width="1920" height="1080" alt="28" src="https://github.com/user-attachments/assets/3c071c9c-ee8e-4a76-8a37-653ea6e56afe" />
+<img width="1920" height="1080" alt="27" src="https://github.com/user-attachments/assets/af9f0761-ade1-4ea9-bb7c-ca1fd7cfb636" />
+<img width="1920" height="1080" alt="33" src="https://github.com/user-attachments/assets/9c0d299f-d722-4ad4-8491-d68f895b5036" />
 
 
 ## 실행 방법
